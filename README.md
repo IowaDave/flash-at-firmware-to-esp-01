@@ -143,6 +143,8 @@ write_flash -z --flash_mode keep \
 0xfe000 blank.bin
 ~~~
 
+### What Each Option Signifies
+
 Each of the option names begins with two dash characters. The name is followed by a space character then by the value being given to that option. The options instruct *esptool.py* as follows:
 
 * --chip auto | let *esptool.py* determine the type of chip it is flashing
@@ -151,9 +153,9 @@ Each of the option names begins with two dash characters. The name is followed b
 * --before default_reset | and the next one...
 * --after hard_reset     | are steps the tool should perform before and after flashing. See the online documentation for details. A link to the documentation is given below.
 * write_flash | commands the esptool to upload files into the chip's flash memory
---flash_mode keep | the default setting, uses a value given in the firmware
---flash_freq keep | default, uses a value given in the firmware, most likely 40m, indicating a flash memory clock frequence of 40 MHz.
---flash_size detect | try to determine flash size automatically
+* --flash_mode keep | the default setting, uses a value given in the firmware
+* --flash_freq keep | default, uses a value given in the firmware, most likely 40m, indicating a flash memory clock frequence of 40 MHz.
+* --flash_size detect | try to determine flash size automatically
 * 0x00000 boot_v1.7...bin | upload this file to memory location 0x00000
 * 0x01000 at/512...bin    | upload this file to memory location 0x01000
 * ... and three more file uploads, to their respective memory locations 
