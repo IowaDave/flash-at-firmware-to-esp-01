@@ -102,7 +102,7 @@ This program does nothing except to halt operation of the CPU. It is probably no
 If Arduino IDE complains that it cannot find &#x0027;python&#x0027;, as it did when I ran the IDE under the Ubuntu 24.04 operating system, then you might need to install a short utility package.
  
 Here is a link explaining this utility, which is named <a href="https://ubuntu.pkgs.org/25.04/ubuntu-main-amd64/python-is-python3_3.13.3-1_all.deb.html">python-is-python3</a>.
-</b;lockquote>
+</blockquote>
 
 <h2 id="path-to-epstool">Obtain the Path to the <em>esptool.py</em> Utility</h2>
 
