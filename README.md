@@ -25,6 +25,9 @@ I will explain where I found what I needed first. After that I will show I used 
 
 ## Resource Locations
 
+### *esptool.py*
+
+
 The easiest way I found to install the *esptool.py* utility was to add the ESP8266 board package to my Arduino IDE.
 
 Follow the instructions for *Installing With Boards Manager*, given on the GitHub page for the 8266 Boards package: [https://github.com/esp8266/Arduino](https://github.com/esp8266/Arduino).
@@ -32,13 +35,20 @@ Follow the instructions for *Installing With Boards Manager*, given on the GitHu
 *esptool.py* gets installed as part of the ESP8266 package. Arduino IDE uses it to upload programs onto ESP devices. 
 
 Farther down in this article, I will explain how to locate it.
+
+
+### AT-command Firmware Files
+
+
 A reasonably current set of files for the AT-command firmware was available in late October, 2025, in a repository that Espressif maintains on GitHub: [https://github.com/espressif/ESP8266_NONOS_SDK](https://github.com/espressif/ESP8266_NONOS_SDK). 
 
-Please note that Espressif discourages use of the older, "NONOS" versions of its firmware. It makes sense, as newer hardware products may benefit from newer versions that cannot run on older hardware. 
+Please note that Espressif discourages use of this and other, older "NONOS" versions of its firmware. It makes sense, as newer hardware products may benefit from newer versions that cannot run on older hardware. 
 
-Meanwhile, the older firmware still works well on older hardware such as the 1MB ESP-01 module. It seems that Espressif does maintain it by fixing bugs, though without adding new features. Language in the repository explains the company's current intentions regarding it.
+Meanwhile, however, the older firmware still works well on older hardware such as my 1MB ESP-01 module. 
 
-Navigate into the 'bin' folder. If all goes well you may see a list of folders and files similar to the following:
+It appears that Espressif does maintain its final, NONOS version, by fixing bugs, although without adding new features. Language in the repository explains the company's current intentions regarding it.
+
+Navigate into the 'bin' folder of the repository. If all goes well you may see a list of folders and files similar to the following:
 
 <pre>
 at
@@ -61,7 +71,7 @@ Unzip the file on your computer, then locate the resulting folder. It will have 
 
 The README.md file inside the 'bin/at' folder gives essential information needed for successful flashing of the firmware. It identifies which files to upload, along with the correct addresses for where to store them in the ESP-01 memory.
 
-You will be entering this information into the command line for the *esptool.py* utility.
+Make a note of where to find this information. You will be entering some of into the command line for the *esptool.py* utility.
 
 <pre>
 # BOOT MODE
@@ -88,9 +98,11 @@ The way I achieve this is to upload a very short program from the Arduino IDE. H
 
 This program does nothing except to halt operation of the CPU. It is probably not necessary. Uploading a program from the IDE does at least reassure me that the ESP-01 is properly connected and prepared to accept a firmware upload.
 
-If Arduino IDE complains that it cannot find 'python', as it did when I ran the IDE under the Ubuntu 24.04 operating system, then you might need to install a short utility package to make your python3 respond to the plain name, 'python'. 
-Here is a link explaining this utility, which is named [python-is-python3](https://ubuntu.pkgs.org/25.04/ubuntu-main-amd64/python-is-python3_3.13.3-1_all.deb.html).
-
+<blockquote>
+If Arduino IDE complains that it cannot find &#x0027;python&#x0027;, as it did when I ran the IDE under the Ubuntu 24.04 operating system, then you might need to install a short utility package.
+ 
+Here is a link explaining this utility, which is named <a href="https://ubuntu.pkgs.org/25.04/ubuntu-main-amd64/python-is-python3_3.13.3-1_all.deb.html">python-is-python3</a>.
+</b;lockquote>
 
 <h2 id="path-to-epstool">Obtain the Path to the <em>esptool.py</em> Utility</h2>
 
