@@ -122,8 +122,8 @@ The command path, obtained in a previous step, needs to be followed by a number 
 --baud 115200 \
 --before default_reset \
 --after hard_reset \
-write_flash -z --flash_mode dio \
---flash_freq 40m --flash_size 1MB \
+write_flash -z --flash_mode keep \
+--flash_freq keep --flash_size detect \
 0x00000 boot_v1.7.bin \
 0x01000 at/512+512/user1.1024.new.2.bin \
 0xfc000 esp_init_data_default_v08.bin \
@@ -136,8 +136,12 @@ Each of the option names begins with two dash characters. The name is followed b
 * --chip auto | let *esptool.py* determine the type of chip it is flashing
 * --port /dev/ttyUSB0 | the hardware address, on my system, of the USB adapter for the ESP-01 module. Readers will need to find this out for themselves on their own systems.
 * --baud 115200 | the default baud rate for ESP devices, but stated here anyway for the sake of completeness
-* --before default_reset |
-* --after hard_reset     | steps the tool should perform before and after flashing. See the online documentation for details. A link to the documentation is given below.
+* --before default_reset | and the next one...
+* --after hard_reset     | are steps the tool should perform before and after flashing. See the online documentation for details. A link to the documentation is given below.
+* write_flash | commands the esptool to upload files into the chip's flash memory
+--flash_mode keep | the default setting, uses a value given in the firmware
+--flash_freq keep | default, uses a value given in the firmware, most likely 40m, indicating a flash memory clock frequence of 40 MHz.
+--flash_size detect | try to determine flash size automatically
 * 0x00000 boot_v1.7...bin | upload this file to memory location 0x00000
 * 0x01000 at/512...bin    | upload this file to memory location 0x01000
 * ... and three more file uploads, to their respective memory locations 
@@ -154,19 +158,6 @@ Move the switch on the USB adapter to the "Prog" position, putting the ESP-01 in
 Copy the completed command from the text editor and paste it into the terminal. Press the Enter key. When all goes well, I see the following output.
 
 ~~~
-~/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/tools/esptool/esptool.py \
---chip auto \
---port /dev/ttyUSB0 \
---baud 115200 \
---before default_reset \
---after hard_reset \
-write_flash -z --flash_mode dio \
---flash_freq 40m \
---flash_size 1MB \
-0x00000 boot_v1.7.bin 0x01000 at/512+512/user1.1024.new.2.bin \
-0xfc000 esp_init_data_default_v08.bin \
-0x7e000 blank.bin \
-0xfe000 blank.bin
 esptool.py v3.0
 Serial port /dev/ttyUSB0
 Connecting....
@@ -179,28 +170,29 @@ Uploading stub...
 Running stub...
 Stub running...
 Configuring flash size...
-Flash params set to 0x0220
+Auto-detected Flash size: 1MB
+Flash params set to 0x0020
 Compressed 4080 bytes to 2936...
-Wrote 4080 bytes (2936 compressed) at 0x00000000 in 0.3 seconds (effective 123.7 kbit/s)...
+Wrote 4080 bytes (2936 compressed) at 0x00000000 in 0.3 seconds (effective 124.0 kbit/s)...
 Hash of data verified.
 Compressed 396900 bytes to 276959...
-Wrote 396900 bytes (276959 compressed) at 0x00001000 in 24.4 seconds (effective 130.1 kbit/s)...
+Wrote 396900 bytes (276959 compressed) at 0x00001000 in 24.4 seconds (effective 130.2 kbit/s)...
 Hash of data verified.
 Compressed 128 bytes to 75...
-Wrote 128 bytes (75 compressed) at 0x000fc000 in 0.0 seconds (effective 78.2 kbit/s)...
+Wrote 128 bytes (75 compressed) at 0x000fc000 in 0.0 seconds (effective 78.3 kbit/s)...
 Hash of data verified.
 Compressed 4096 bytes to 26...
-Wrote 4096 bytes (26 compressed) at 0x0007e000 in 0.0 seconds (effective 3775.0 kbit/s)...
+Wrote 4096 bytes (26 compressed) at 0x0007e000 in 0.0 seconds (effective 3896.4 kbit/s)...
 Hash of data verified.
 Compressed 4096 bytes to 26...
-Wrote 4096 bytes (26 compressed) at 0x000fe000 in 0.0 seconds (effective 3935.3 kbit/s)...
+Wrote 4096 bytes (26 compressed) at 0x000fe000 in 0.0 seconds (effective 3836.2 kbit/s)...
 Hash of data verified.
 
 Leaving...
 Hard resetting via RTS pin...
 ~~~
 
-'Hash of data verified." indicates to me that the upload succeeded. Let us check.
+"Hash of data verified." indicates to me that the upload succeeded. Let us check.
 
 ## Test It in the Arduino Serial Monitor
 
@@ -223,7 +215,7 @@ Bin version(Wroom 02):1.7.6
 OK
 </pre>
 
-If so, you are in business. Notice that it is Version 1.7.6.0 dated January 2022 and the binary files uploaded to the ESP-01 were compiled in June of 2024.
+If so, you are in business. Notice that the firmware is Version 1.7.6.0 dated January 2022 and the binary files uploaded to the ESP-01 were compiled in June of 2024.
 
 ## Helpful Links
 I keep the following two links bookmarked on my system for ready reference.
@@ -232,3 +224,7 @@ I keep the following two links bookmarked on my system for ready reference.
 * [AT-Command Reference](https://docs.espressif.com/projects/esp-at/en/latest/esp32/AT_Command_Set/Basic_AT_Commands.html)
 
 Exercise care with these references: almost certainly they best describe different, more modern hardware compared to my old, ESP-01 modules. Even so, I find them useful.
+
+The esptool reference explains other values that may be tried for flash mode, speed and size in the event that default values do not work as expected. I have not encountered any problem like this with my old ESP-01 modules.
+
+I elected to retain a local copy of that NONOS firmware repository as a safeguard against Espressif deciding to withdraw public access in the future. It is published under a form of open-source license, which I believe authorizes me to copy it. Readers will have to consult their own counsel regarding how the license applies to their individual situations. 
