@@ -88,10 +88,8 @@ The way I achieve this is to upload a very short program from the Arduino IDE. H
 
 This program does nothing except to halt operation of the CPU. It is probably not necessary. Uploading a program from the IDE does at least reassure me that the ESP-01 is properly connected and prepared to accept a firmware upload.
 
-<blockquote>
 If Arduino IDE complains that it cannot find 'python', as it did when I ran the IDE under the Ubuntu 24.04 operating system, then you might need to install a short utility package to make your python3 respond to the plain name, 'python'. 
-Here is a link that explains this utility, which is named [python-is-python3](https://ubuntu.pkgs.org/25.04/ubuntu-main-amd64/python-is-python3_3.13.3-1_all.deb.html).
-</blockquote>
+Here is a link explaining this utility, which is named [python-is-python3](https://ubuntu.pkgs.org/25.04/ubuntu-main-amd64/python-is-python3_3.13.3-1_all.deb.html).
 
 <h2 id="path-to-epstool">Obtain the Path to the <em>esptool.py</em> Utility</h2>
 The *esptool.py* utility runs on the command line of a terminal. The command begins by stating the path to the command. Now, where is it?
