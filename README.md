@@ -7,11 +7,13 @@ This article rediscovers a method I have used to install the AT-command firmware
 
 An ESP-01 module needs to connect through some sort of go-between device for programming. The photo shows one mounted on a USB adapter for direct connection to a computer. 
 
-A switch on the adapter can place the ESP-01 into "Program mode" or "UART Mode". 
+A switch on the adapter can place the ESP-01 into "Program mode" or "UART Mode". Both modes are demonstrated in this article. 
 
 Arduino IDE can upload programs onto an ESP-01 connected by a programmer such as the one pictured above. Its Serial Monitor can communicate with the ESP-01 through the UART (another name for a serial interface).
 
-The AT-commands transform the ESP-01 into an interactive appliance having many uses, without writing a program for its built-in ESP8266 processor. For example, the module's WiFi capability can give internet access to projects running on Arduino Unos and Nanos, and on bare AVR microcontrollers.
+The AT-commands transform the ESP-01 into an interactive appliance having many uses, without writing a program for its built-in ESP8266 processor. 
+
+For example, projects running on Arduino Unos and Nanos, and even on bare AVR microcontrollers, can access a WiFi network by sending AT-commands to the ESP-01 through its UART serial interface.
 
 It may be that Espressif, the manufacturer, supplies an 'official' firmware-flashing application that runs exclusively on the Windows operating system. Because I live in Linux-land, including Mac OS, I needed another way to do it.
 
@@ -34,7 +36,7 @@ Follow the instructions for *Installing With Boards Manager*, given on the GitHu
 
 *esptool.py* gets installed as part of the ESP8266 package. Arduino IDE uses it to upload programs onto ESP devices. 
 
-Farther down in this article, I will explain how to locate it.
+The program will be installed deep, down inside the directory structure of the Arduino IDE's ESP8266 board package. Farther down in this article, I will explain how to locate it, then how to invoke the esptool for flashing AT-firmware onto the ESP-01.
 
 
 ### AT-command Firmware Files
@@ -42,9 +44,9 @@ Farther down in this article, I will explain how to locate it.
 
 A reasonably current set of files for the AT-command firmware was available in late October, 2025, in a repository that Espressif maintains on GitHub: [https://github.com/espressif/ESP8266_NONOS_SDK](https://github.com/espressif/ESP8266_NONOS_SDK). 
 
-Please note that Espressif discourages use of this and other, older "NONOS" versions of its firmware. It makes sense, as newer hardware products may benefit from newer versions that cannot run on older hardware. 
+Please note that Espressif discourages use of this and other, older "NONOS" versions of its firmware. It makes sense from their point of view, as newer hardware products may benefit from new features introduced in more recent, larger versions of the firmware that cannot fit into or run on older hardware. 
 
-Meanwhile, however, the older firmware still works well on older hardware such as my 1MB ESP-01 module. 
+Meanwhile, however, the set of AT-commands provided by the older firmware still serve my purposes well on older hardware such as my 1MB ESP-01 module. 
 
 It appears that Espressif does maintain its final, NONOS version, by fixing bugs, although without adding new features. Language in the repository explains the company's current intentions regarding it.
 
@@ -96,13 +98,17 @@ The way I achieve this is to upload a very short program from the Arduino IDE. H
 3 int main () { return 0; }
 ~~~
 
+Move the switch on the USB adapter with its switch in the 'Prog" position. Enter the short program into the Arduino IDE. Choose "Generic ESP8266 Module" as the boart type and select the Port where the computer mounted the adapter. My Debian-based Linux system mounted it at /dev/ttyUSB0, for example. 
+
+Make a note of this mount-point, as you will need to enter it on the esptool command line when flashing the AT-command firmware.
+
 This program does nothing except to halt operation of the CPU. It is probably not necessary. Uploading a program from the IDE does at least reassure me that the ESP-01 is properly connected and prepared to accept a firmware upload.
 
 <blockquote>
-If Arduino IDE complains that it cannot find &#x0027;python&#x0027;, as it did when I ran the IDE under the Ubuntu 24.04 operating system, then you might need to install a short utility package.
- 
-Here is a link explaining this utility, which is named <a href="https://ubuntu.pkgs.org/25.04/ubuntu-main-amd64/python-is-python3_3.13.3-1_all.deb.html">python-is-python3</a>.
+If Arduino IDE complains that it cannot find &#x0027;python&#x0027;, as it did when I ran the IDE under the Ubuntu 24.04 operating system, then you might need to install a small utility package named <a href="https://ubuntu.pkgs.org/25.04/ubuntu-main-amd64/python-is-python3_3.13.3-1_all.deb.html">python-is-python3</a>. The link goes to an explanation of what the package does and how it solves the problem. 
 </blockquote>
+
+After uploading the program onto the ESP-01 module, quit the Arduino IDE. This step ensures that it does not stay connected to the port where the ESP is mounted. If you allow the IDE to keep the port in a 'busy' state it may interfere with flashing the AT-command firmware at the next step.
 
 <h2 id="path-to-epstool">Obtain the Path to the <em>esptool.py</em> Utility</h2>
 
@@ -150,24 +156,24 @@ Each of the option names begins with two dash characters. The name is followed b
 * --chip auto | let *esptool.py* determine the type of chip it is flashing
 * --port /dev/ttyUSB0 | the hardware address, on my system, of the USB adapter for the ESP-01 module. Readers will need to find this out for themselves on their own systems.
 * --baud 115200 | the default baud rate for ESP devices, but stated here anyway for the sake of completeness
-* --before default_reset | and the next one...
+* --before default_reset | this option and the next one...
 * --after hard_reset     | are steps the tool should perform before and after flashing. See the online documentation for details. A link to the documentation is given below.
-* write_flash | commands the esptool to upload files into the chip's flash memory
+* write_flash | commands the esptool to upload files into the chip's flash memory. This is a command, not an option, which is why it does not have the two dash characters preceding it.
 * --flash_mode keep | the default setting, uses a value given in the firmware
-* --flash_freq keep | default, uses a value given in the firmware, most likely 40m, indicating a flash memory clock frequence of 40 MHz.
+* --flash_freq keep | default, uses a value given in the firmware, most likely 40m, indicating a flash memory clock frequency of 40 MHz.
 * --flash_size detect | try to determine flash size automatically
 * 0x00000 boot_v1.7...bin | upload this file to memory location 0x00000
 * 0x01000 at/512...bin    | upload this file to memory location 0x01000
-* ... and three more file uploads, to their respective memory locations 
+* ... and three more file uploads, to their respective memory locations. As with the write_flash command, these file specifications are not preceded by dash characters. They are separated by space characters. 
 
-Review the listing of file names and addresses copied from the *README.md* file, shown above. Study how the list of options to the utility makes use of the information Espressif provides there.
+Review the listing of file names and memory addresses given in the *bin/at/README.md* file of the firmware repository, shown above. Study how the list of options on the esptool command line makes use of the information Espressif provides there.
 
 The README list is specified for a flash size of 8 Mb, meaning 8 mega*bits*. There being 8 bits in a byte, that size equates to 1 MB, mega*byte*.
 
 The size specification is the reason I selected this particular list of file names and addresses to fill out the options list for my *esptool.py* command to flash a 1 MB device.
 
 ## Run the Command
-Move the switch on the USB adapter to the "Prog" position, putting the ESP-01 into "program mode".
+Double-check that the switch on the USB adapter is in the "Prog" position, putting the ESP-01 into "program mode".
 
 Copy the completed command from the text editor and paste it into the terminal. Press the Enter key. When all goes well, I see the following output.
 
@@ -229,7 +235,7 @@ Bin version(Wroom 02):1.7.6
 OK
 </pre>
 
-If so, you are in business. Notice that the firmware is Version 1.7.6.0 dated January 2022 and the binary files uploaded to the ESP-01 were compiled in June of 2024.
+If so, you are in business. How nice it was, in year 2025, to see that the firmware Version 1.7.6.0 is dated January 2022 and the binary files uploaded to the ESP-01 were compiled in June of 2024.
 
 ## Helpful Links
 I keep the following two links bookmarked on my system for ready reference.
