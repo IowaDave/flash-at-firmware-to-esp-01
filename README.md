@@ -166,8 +166,10 @@ I separate the options and commands below to aid readability. As you may know, t
 --baud 115200 \
 --before default_reset \
 --after hard_reset \
-write_flash -z --flash_mode keep \
---flash_freq keep --flash_size detect \
+write_flash -z 
+--flash_mode keep \
+--flash_freq keep 
+--flash_size detect \
 0x00000 boot_v1.7.bin \
 0x01000 at/512+512/user1.1024.new.2.bin \
 0xfc000 esp_init_data_default_v08.bin \
@@ -184,13 +186,15 @@ Each of the option names begins with two dash characters. The name is followed b
 * --baud 115200 | the default baud rate for ESP devices, but stated here anyway for the sake of completeness
 * --before default_reset | this option and the next one...
 * --after hard_reset     | are steps the tool should perform before and after flashing. See the online documentation for details. A link to the documentation is given below.
-* write_flash | commands the esptool to upload files into the chip's flash memory. This is a command, not an option, which is why it does not have the two dash characters preceding it.
+* write_flash | commands the esptool to upload files into the chip's flash memory. This is a command, not an option, which is why it does not have the two dash characters preceding it. (I do not (yet) know what the -z option means. It appears i many (but not all) examples found online. It seems to do no harm, at least.)
 * --flash_mode keep | the default setting, uses a value given in the firmware, most likely &#x0027;dio&#x0027;, a certain way of wiring the device for uploads.
 * --flash_freq keep | default, uses a value given in the firmware, most likely 40m, indicating a flash memory clock frequency of 40 MHz.
 * --flash_size detect | try to determine flash size automatically
 * 0x00000 boot_v1.7...bin | upload this file to memory location 0x00000
 * 0x01000 at/512...bin    | upload this file to memory location 0x01000
-* ... and three more file uploads, to their respective memory locations. As with the write_flash command, these file specifications are not preceded by dash characters. They are separated by space characters. 
+* ... and three more file uploads, to their respective memory locations. These file specifications form part of the write_flash command, which is why they are not preceded by dash characters. 
+
+As the example demonstrates, multiple files can be uploaded to different areas in the flash memory during a single run of the esptool. 
 
 Review the listing of file names and memory addresses given in the *bin/at/README.md* file of the firmware repository, shown above. Study how the list of options on the esptool command line makes use of the information Espressif provides there.
 
