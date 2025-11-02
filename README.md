@@ -104,11 +104,11 @@ The way I achieve this is to upload a very short program from the Arduino IDE. H
 3 int main () { return 0; }
 ~~~
 
-Move the switch on the USB adapter with its switch in the 'Prog" position. Enter the short program into the Arduino IDE. Choose "Generic ESP8266 Module" as the boart type and select the Port where the computer mounted the adapter. My Debian-based Linux system mounted it at /dev/ttyUSB0, for example. 
+Move the switch on the USB adapter into the 'Prog" position and insert the adapter into the computer. Enter the short program into the Arduino IDE. Choose "Generic ESP8266 Module" as the boart type and select the Port where the computer mounted the adapter. My Debian-based Linux system mounted it at /dev/ttyUSB0, for example. 
 
 Make a note of this mount-point, as you will need to enter it on the esptool command line when flashing the AT-command firmware.
 
-This program does nothing except to halt operation of the CPU. It is probably not necessary. Uploading a program from the IDE does at least reassure me that the ESP-01 is properly connected and prepared to accept a firmware upload.
+The program does nothing except to halt operation of the CPU. It is probably not necessary to do this; however, uploading a program from the IDE does bring some benefits. It reassures me that the ESP-01 is properly connected and prepared to accept a firmware upload.
 
 <blockquote>
 <p>If Arduino IDE complains that it cannot find &#x0027;python&#x0027;, as it did when I ran the IDE under the Ubuntu 24.04 operating system, then you might need to install a small utility package named <a href="https://ubuntu.pkgs.org/25.04/ubuntu-main-amd64/python-is-python3_3.13.3-1_all.deb.html">python-is-python3</a>. The link goes to an explanation of what the package does and how it solves the problem.</p>
@@ -132,6 +132,12 @@ I found mine by searching the usually-hidden file folder named '.arduino15'. Her
 
 ~~~
 /home/iowadave/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/tools/esptool/esptool.py
+~~~
+
+This can be made generic for any user on my computer by replacing the */home/iowadave* prefix with the tilde character. It becomes
+
+~~~
+~/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/tools/esptool/esptool.py
 ~~~
 
 That whole string serves as the name of the program. Terminal commands always begin with the name of the program to be run. Make a note of it. 
@@ -193,6 +199,9 @@ The README list is specified for a flash size of 8 Mb, meaning 8 mega*bits*. The
 The fact that the size specification for these firmware files matches the flash-memory size of my ESP-01 module is the reason I selected this particular list to inform my *esptool.py* command.
 
 ## Run the Command
+
+*Important! The command as-written for this example is designed to be executed in a command-line terminal that is open to the 'bin' folder of the user's local copy of the firmware repository.*
+
 Double-check that the switch on the USB adapter is in the "Prog" position, putting the ESP-01 into "program mode".
 
 Copy the completed command from the text editor and paste it into the terminal. Press the Enter key. When all goes well, I see the following output.
