@@ -166,9 +166,9 @@ I separate the options and commands below to aid readability. As you may know, t
 --baud 115200 \
 --before default_reset \
 --after hard_reset \
-write_flash -z 
+write_flash -z \
 --flash_mode keep \
---flash_freq keep 
+--flash_freq keep \
 --flash_size detect \
 0x00000 boot_v1.7.bin \
 0x01000 at/512+512/user1.1024.new.2.bin \
